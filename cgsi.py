@@ -407,7 +407,7 @@ def main() -> int:
         os.makedirs(EXTRACT_DIR)
     dest_path = None
     print("========================================")
-    print("    OEM Generic System Image Marker")
+    print("    OEM Generic System Image Maker")
     print("========================================")
     print(f"  Provided by {'|'.join(__author__)}")
     print("========================================")
