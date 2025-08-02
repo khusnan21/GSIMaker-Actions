@@ -1,4 +1,4 @@
-# OEM Generic System Image Marker
+# OEM Generic System Image Maker
 ## Usage
 
 - First, You need to install python3
