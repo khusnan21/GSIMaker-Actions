@@ -306,12 +306,12 @@ def merge_parts_inside(parts: list):
     os.makedirs(dynamic_fs_dir, exist_ok=True)
     for partition in parts:
         if not os.path.exists(systemdir):
-            print("system.img未解包，请解包后继续")
+            print("system.img is not unpacked，please continue after unpacking it.")
             return 1
         if not os.path.exists(os.path.join(IMG_DIR, partition)):
-            print(f"{partition}.img未解包，请解包后继续")
+            print(f"{partition}.img is not unpacked，please continue after unpacking it.")
             return 1
-        print(f"- 合并 {partition} 分区")
+        print(f"- Merging {partition} partition.")
         if os.path.isdir(os.path.join(IMG_DIR, partition)):
             rm_rf(os.path.join(systemdir, partition))
             rm_rf(os.path.join(IMG_DIR, partition, "lost+found"))
@@ -353,7 +353,7 @@ def merge_parts_inside(parts: list):
                 f.truncate(0)
                 f.writelines(lines2)
                 f.writelines(lines)
-        print("分区合并完成")
+        print(f"Merged {partition}.")
     rm_rf(dynamic_fs_dir)
     return 0
 
