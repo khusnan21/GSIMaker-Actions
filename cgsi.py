@@ -137,14 +137,14 @@ def extract_images():
                          os.path.join(EXTRACT_DIR, f"{partition}.new.dat"),
                          os.path.join(EXTRACT_DIR, f"{partition}.img"))
     print("检查提取的img文件：")
-    EXTRACTED_COUNT = 0
+    extracted_count = 0
     for img in img_files_list:
         if os.path.exists(os.path.join(EXTRACT_DIR, f"{img}.img")):
             print(f"✓ {img}")
-            EXTRACTED_COUNT += 1
+            extracted_count += 1
         else:
             print(f"✗ {img} (未找到)")
-    print(f"成功提取 {EXTRACTED_COUNT} 个镜像文件。")
+    print(f"成功提取 {extracted_count} 个镜像文件。")
     return 0
 
 
