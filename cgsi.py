@@ -440,7 +440,7 @@ def main() -> int:
     print("1. Download and process")
     print("2. Process local roms")
     print("3. Exit")
-    mode = input("Select (1/2):")
+    mode = input("Select (1/2/3):")
     if mode == "3":
         return 0
     elif mode == '1':
