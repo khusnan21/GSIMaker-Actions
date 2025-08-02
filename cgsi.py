@@ -412,10 +412,10 @@ def main() -> int:
     print(f"  Provided by {'|'.join(__author__)}")
     print("========================================")
     print()
-    print("选择操作模式：")
-    print("1. 下载新固件并处理")
-    print("2. 处理已有固件文件")
-    mode = input("请选择 (1/2):")
+    print("Please Select Operation：")
+    print("1. Download and process")
+    print("2. Process local roms")
+    mode = input("Select (1/2):")
     if mode == '1':
         url = input("Enter download url([q] to exit):")
         if url:
