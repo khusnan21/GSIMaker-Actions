@@ -1,5 +1,5 @@
 #!/bin/env python3
-"""
+r"""
   __  __ ___ ____ ___ ____  _____
  |  \/  |_ _/ ___|_ _|  _ \| ____|
  | |\/| || |\___ \| || | | |  _|
@@ -30,6 +30,7 @@ else:
     sys.stdout.write("\x1b]2;OEM Generic System Image Maker\x07")
     sys.stdout.flush()
 __author__ = ["ColdWindScholar", "Child I"]
+__version__ = "1.0.0"
 if os.name == 'nt':
     prog_path = os.getcwd()
 else:
@@ -433,6 +434,7 @@ def main() -> int:
     print("========================================")
     print("    OEM Generic System Image Maker")
     print("========================================")
+    print(f"  Version:{__version__}")
     print(f"  Provided by {'|'.join(__author__)}")
     print("========================================")
     print()
