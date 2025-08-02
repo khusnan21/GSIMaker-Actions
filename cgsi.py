@@ -410,7 +410,6 @@ def main() -> int:
     print("    OEM Generic System Image Marker")
     print("========================================")
     print(f"  Provided by {'|'.join(__author__)}")
-    print(f"  Sota has no permission to use this tool.")
     print("========================================")
     print()
     print("选择操作模式：")
