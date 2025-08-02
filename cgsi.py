@@ -136,15 +136,15 @@ def extract_images():
                 Sdat2img(os.path.join(EXTRACT_DIR, f"{partition}.transfer.list"),
                          os.path.join(EXTRACT_DIR, f"{partition}.new.dat"),
                          os.path.join(EXTRACT_DIR, f"{partition}.img"))
-    print("检查提取的img文件：")
+    print("Checking extracted images...：")
     extracted_count = 0
     for img in img_files_list:
         if os.path.exists(os.path.join(EXTRACT_DIR, f"{img}.img")):
             print(f"✓ {img}")
             extracted_count += 1
         else:
-            print(f"✗ {img} (未找到)")
-    print(f"成功提取 {extracted_count} 个镜像文件。")
+            print(f"✗ {img} (Not Found)")
+    print(f"{extracted_count} Images extracted.")
     return 0
 
 
