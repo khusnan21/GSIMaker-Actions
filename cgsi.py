@@ -292,7 +292,8 @@ def merge_my():
                 f.writelines(lines)
 
         print(f"Merged {partition}")
-        with open(f"{systemdir}/system/build.prop", "a") as f:
+        with open(f"{systemdir}/system/build.prop", "a", encoding='utf-8', newline='\n') as f:
+            f.write("\n")
             f.write(f"import /{partition}/build.prop")
     rm_rf(dynamic_fs_dir)
     return 0
