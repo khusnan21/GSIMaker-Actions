@@ -397,6 +397,11 @@ def repack_image():
                 return 1
     return 0
 
+def clean_up():
+    print("Cleaning up...")
+    rm_rf(EXTRACT_DIR)
+    print("Done.")
+    return 0
 
 def main() -> int:
     if check_tools():
@@ -440,6 +445,8 @@ def main() -> int:
     if merge_parts_inside(["system_ext", "product"]):
         return 1
     if repack_image():
+        return 1
+    if clean_up():
         return 1
     return 0
 
