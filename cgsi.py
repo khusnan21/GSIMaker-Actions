@@ -153,7 +153,7 @@ def decompose_images():
     for name in img_files_list:
         img_path = os.path.join(EXTRACT_DIR, f"{name}.img")
         if os.path.exists(img_path):
-            print(f"正在处理 {name}...")
+            print(f"Processing {name}...")
             file_type = gettype(img_path)
             if file_type == 'sparse':
                 if call(["simg2img", f"{img_path}", f"{EXTRACT_DIR}/{name}_unsparse.img"]): return 1
@@ -219,7 +219,7 @@ def modify_parts():
     else:
         print("suitable init not found")
     if manufacturer == "Xiaomi":
-        print("Xiaomi")
+        print("ROM:Xiaomi")
         with open(f"{systemdir}/system/build.prop", 'a+', encoding='utf-8') as f, open(
                 f"{BIN_DIR}/build/miui/system.prop", 'r', encoding='utf-8') as o:
             f.writelines(o.readlines())
@@ -227,7 +227,7 @@ def modify_parts():
                 f"{BIN_DIR}/build/miui/product.prop", 'r', encoding='utf-8') as o:
             f.writelines(o.readlines())
     if manufacturer in ["meizu", 'vivo'] and vndk == '34':
-        print("Flyme")
+        print("ROM:Flyme")
         copytree(f"{BIN_DIR}/files/flyme/system/apex", f"{systemdir}/system/apex", dirs_exist_ok=True)
         copytree(f"{BIN_DIR}/files/flyme/product/overlay", f"{IMG_DIR}/product/overlay", dirs_exist_ok=True)
     copytree(f"{BIN_DIR}/apex", f"{systemdir}/system/apex", dirs_exist_ok=True)
@@ -248,12 +248,12 @@ def merge_my():
             if partition != 'mi_ext':
                 continue
         if not os.path.exists(systemdir):
-            print("system.img未解包，请解包后继续")
+            print("system.img is not unpacked，please continue after unpacking it.")
             return 1
         if not os.path.exists(os.path.join(IMG_DIR, partition)):
-            print(f"{partition}.img未解包，请解包后继续")
+            print(f"{partition}.img is not unpacked，please continue after unpacking it.")
             return 1
-        print(f"- 合并 {partition} 分区")
+        print(f"- Merging {partition} Partition")
         if os.path.isdir(os.path.join(IMG_DIR, partition)):
             rm_rf(os.path.join(systemdir, partition))
             rm_rf(os.path.join(IMG_DIR, partition, "lost+found"))
@@ -289,7 +289,7 @@ def merge_my():
                 f.writelines(lines2)
                 f.writelines(lines)
 
-        print("分区合并完成")
+        print(f"Merged {partition}")
         with open(f"{systemdir}/system/build.prop", "a") as f:
             f.write(f"import /{partition}/build.prop")
     rm_rf(dynamic_fs_dir)
