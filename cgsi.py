@@ -204,7 +204,8 @@ def modify_parts():
     with open(f"{systemdir}/system/build.prop", 'r+', encoding='utf-8') as f:
         lines = f.readlines()
         lines = [i for i in lines if "media.settings.xml=/vendor/etc/media_profiles_vendor.xml" not in i]
-        f.truncate(0)
+        f.seek(0)
+        f.truncate()
         lines.append("persist.sys.usb.config=adb,mtp\n")
         lines.append("ro.adb.secure=0\n")
         lines.append("ro.secure=0\n")
@@ -274,7 +275,8 @@ def merge_my():
                 lines.append(f"/system/{partition} u:object_r:system_file:s0\n")
             with open(target_contexts, 'r+', encoding='utf-8') as f:
                 lines2 = f.readlines()
-                f.truncate(0)
+                f.seek(0)
+                f.truncate()
                 f.writelines([i for i in lines2 if not f"system/{partition} " in i])
                 f.writelines(lines)
         if os.path.exists(os.path.join(dynamic_fs_dir, f"{partition}_fs_config")):
@@ -287,7 +289,8 @@ def merge_my():
             with open(target_fs, 'r+', encoding='utf-8') as f:
                 lines2 = f.readlines()
                 lines2 = [i for i in lines2 if not f"system/{partition} " in i]
-                f.truncate(0)
+                f.seek(0)
+                f.truncate()
                 f.writelines(lines2)
                 f.writelines(lines)
 
@@ -342,7 +345,8 @@ def merge_parts_inside(parts: list):
                 lines.append(f"/system/{partition} u:object_r:system_file:s0\n")
             with open(target_contexts, 'r+', encoding='utf-8') as f:
                 lines2 = f.readlines()
-                f.truncate(0)
+                f.seek(0)
+                f.truncate()
                 f.writelines([i for i in lines2 if not f"system/{partition} " in i])
                 f.writelines(lines)
         if os.path.exists(os.path.join(dynamic_fs_dir, f"{partition}_fs_config")):
@@ -353,7 +357,8 @@ def merge_parts_inside(parts: list):
             with open(target_fs, 'r+', encoding='utf-8') as f:
                 lines2 = f.readlines()
                 lines2 = [i for i in lines2 if not f"system/{partition} " in i]
-                f.truncate(0)
+                f.seek(0)
+                f.truncate()
                 f.writelines(lines2)
                 f.writelines(lines)
         print(f"Merged {partition}.")
