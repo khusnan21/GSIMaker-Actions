@@ -121,7 +121,7 @@ def extract_images():
 
     if os.path.exists(os.path.join(EXTRACT_DIR, 'payload.bin')):
         with open(os.path.join(EXTRACT_DIR, 'payload.bin'), "rb") as f:
-            extract_partitions_from_payload(f, [], EXTRACT_DIR, os.cpu_count() or 2)
+            extract_partitions_from_payload(f, img_files_list, EXTRACT_DIR, os.cpu_count() or 2)
     else:
         for partition in img_files_list:
             if os.path.exists(os.path.join(EXTRACT_DIR, f"{partition}.new.dat.br")):
