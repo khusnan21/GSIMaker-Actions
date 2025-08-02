@@ -431,8 +431,11 @@ def main() -> int:
     print("Please Select Operation：")
     print("1. Download and process")
     print("2. Process local roms")
+    print("3. Exit")
     mode = input("Select (1/2):")
-    if mode == '1':
+    if mode == "3":
+        return 0
+    elif mode == '1':
         url = input("Enter download url([q] to exit):")
         if url:
             filename = url.split("/")[-1].split('?')[0]
