@@ -16,9 +16,9 @@ from src.contextpatch import main as contextpatch
 if os.name == 'nt':
     import ctypes
 
-    ctypes.windll.kernel32.SetConsoleTitleW("OEM Generic System Image Marker")
+    ctypes.windll.kernel32.SetConsoleTitleW("OEM Generic System Image Maker")
 else:
-    sys.stdout.write("\x1b]2;OEM Generic System Image Marker\x07")
+    sys.stdout.write("\x1b]2;OEM Generic System Image Maker\x07")
     sys.stdout.flush()
 __author__ = ["ColdWindScholar", "Child I"]
 if os.name == 'nt':
