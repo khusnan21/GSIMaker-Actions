@@ -400,7 +400,7 @@ def repack_image():
     choice = input("Choose a FileSystem to Repack:[ext(default)/erofs]")
     if choice == "erofs":
         return call(["mkfs.erofs", "-zlz4hc,9", "--mount-point", f"/system", "--fs-config-file", f"{IMG_DIR}/config/system_fs_config",
-                     "--file-contexts", f"{IMG_DIR}/config/system_file_contexts", f"{IMG_DIR}/out/system.img", f"{IMG_DIR}/system"])
+                     "--file-contexts", f"{IMG_DIR}/config/system_file_contexts", f"{IMG_DIR}/out/system.img", f"{IMG_DIR}/system"], out_=False)
     else:
         size = get_dir_size(systemdir)
         size2 = int(size / 4096 + 4096*10)
