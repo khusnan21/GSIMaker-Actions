@@ -87,11 +87,11 @@ def call(exe, extra_path=True, out_=None) -> int:
 
 
 def check_tools():
-    print("检查必要工具...")
+    print("Checking necessary tools...")
     if not os.path.exists(tool_bin):
         print(f"BIN_DIR {tool_bin} not found.")
         return 1
-    print("工具检查完成。")
+    print("Done.")
     return 0
 
 
