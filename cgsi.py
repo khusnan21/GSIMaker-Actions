@@ -295,6 +295,8 @@ def merge_my():
                 lines = lines[1:]
                 lines = [f"system/{i}" for i in lines]
                 lines = lines[1:]
+                if not lines[len(lines) - 1].endswith("\n"):
+                    lines.append("\n")
                 lines.append(f"system/{partition} 0 0 0755\n")
             with open(target_fs, 'r+', encoding='utf-8') as f:
                 lines2 = f.readlines()
