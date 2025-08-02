@@ -456,6 +456,7 @@ def main() -> int:
     if not dest_path:
         print(f"[{dest_path}] not found.")
         return 1
+    clean_up()
     if extract_rom(dest_path):
         return 1
     if extract_images():
