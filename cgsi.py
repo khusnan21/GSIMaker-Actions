@@ -365,7 +365,7 @@ def merge_parts_inside(parts: list):
             with open(os.path.join(dynamic_fs_dir, f"{partition}_fs_config"), 'r+', encoding='utf-8') as f:
                 lines = [i for i in f.readlines() if not i.startswith('/ 0')]
                 lines = [f"system/system/{i}" for i in lines]
-                lines.append(f"system/{partition} 0 0 0644 /system/{partition}")
+                lines.append(f"system/{partition} 0 0 0644 /system/{partition}\n")
             with open(target_fs, 'r+', encoding='utf-8') as f:
                 lines2 = f.readlines()
                 lines2 = [i for i in lines2 if not f"system/{partition} " in i]
