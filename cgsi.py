@@ -408,6 +408,8 @@ def repack_image():
 def clean_up():
     print("Cleaning up...")
     rm_rf(EXTRACT_DIR)
+    rm_rf(os.path.join(IMG_DIR, "system"))
+    rm_rf(os.path.join(IMG_DIR, "config"))
     print("Done.")
     return 0
 
@@ -456,6 +458,7 @@ def main() -> int:
         return 1
     if clean_up():
         return 1
+    print(f"Done!The GSi File is {IMG_DIR}/out/system.img.")
     return 0
 
 
