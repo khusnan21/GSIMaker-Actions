@@ -222,9 +222,11 @@ def modify_parts():
         print("ROM:Xiaomi")
         with open(f"{systemdir}/system/build.prop", 'a+', encoding='utf-8') as f, open(
                 f"{BIN_DIR}/build/miui/system.prop", 'r', encoding='utf-8') as o:
+            f.write("\n")
             f.writelines(o.readlines())
         with open(f"{IMG_DIR}/product/etc/build.prop", "a+", encoding='utf-8') as f, open(
                 f"{BIN_DIR}/build/miui/product.prop", 'r', encoding='utf-8') as o:
+            f.write("\n")
             f.writelines(o.readlines())
     if manufacturer in ["meizu", 'vivo'] and vndk == '34':
         print("ROM:Flyme")
