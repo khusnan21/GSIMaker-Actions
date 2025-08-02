@@ -13,4 +13,5 @@ pip3 install -r requirements.txt
 ```shell
 python3 cgsi.py
 ```
+#### Thanks [Child I](https://github.com/haizi123-2) For help!
 #### ColdWindScholar(3590361911@qq.com).All rights reserved.
