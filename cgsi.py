@@ -41,9 +41,8 @@ else:
             path_frags = path_frags[:-3]
             prog_path = os.path.sep.join(path_frags)
 
-BASE_DIR = prog_path
-IMG_DIR = os.path.join(BASE_DIR, 'IMG')
-EXTRACT_DIR = os.path.join(BASE_DIR, 'EXTRACT')
+IMG_DIR = os.path.join(prog_path, 'IMG')
+EXTRACT_DIR = os.path.join(prog_path, 'EXTRACT')
 tool_bin = os.path.join(prog_path, 'bin', platform.system(), platform.machine())
 BIN_DIR = os.path.join(prog_path, 'bin')
 img_files_list = ['my_bigball', 'my_carrier', 'my_engineering', 'my_heytap', 'my_manifest', 'my_product',
