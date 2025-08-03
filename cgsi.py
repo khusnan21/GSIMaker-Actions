@@ -347,7 +347,7 @@ def merge_parts_inside(parts: list):
         skip_mount_file = f"{systemdir}/etc/init/config/skip_mount.cfg"
         if not os.path.exists(skip_mount_file):
             with open(skip_mount_file, 'w', encoding='utf-8') as f:
-                f.write("")
+                ...
         with open(skip_mount_file, 'a+', encoding='utf-8') as f:
             f.write(f"/{partition}")
         if os.path.exists(os.path.join(dynamic_fs_dir, f"{partition}_file_contexts")):
