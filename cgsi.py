@@ -349,7 +349,7 @@ def merge_parts_inside(parts: list):
             with open(skip_mount_file, 'w', encoding='utf-8') as f:
                 ...
         with open(skip_mount_file, 'a+', encoding='utf-8') as f:
-            f.write(f"/{partition}")
+            f.write(f"/{partition}\n")
         if os.path.exists(os.path.join(dynamic_fs_dir, f"{partition}_file_contexts")):
             with open(os.path.join(dynamic_fs_dir, f"{partition}_file_contexts"), 'r+', encoding='utf-8') as f:
                 lines = [i for i in f.readlines() if not i.startswith('/ u:')]
