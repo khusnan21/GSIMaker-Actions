@@ -188,7 +188,7 @@ def rm_rf(path: str):
         rmtree(path)
 
 
-def get_prop(file: str, name: str):
+def get_prop(file: str, name: str) -> str:
     if os.path.isfile(file):
         with open(file, "r", encoding='utf-8') as f:
             for i in f.readlines():
@@ -198,7 +198,7 @@ def get_prop(file: str, name: str):
     return ""
 
 
-def modify_parts():
+def modify_parts() -> int:
     systemdir = f"{IMG_DIR}/system"
     if readlink(f"{systemdir}/cache"):
         rm_rf(f"{systemdir}/cache")
@@ -248,7 +248,7 @@ def modify_parts():
     return 0
 
 
-def merge_my():
+def merge_my() -> int:
     systemdir = os.path.join(IMG_DIR, "system")
     configdir = os.path.join(IMG_DIR, "config")
     dynamic_fs_dir = os.path.join(IMG_DIR, "dynamic_fs")
@@ -314,7 +314,7 @@ def merge_my():
     return 0
 
 
-def merge_parts_inside(parts: list):
+def merge_parts_inside(parts: list) -> int:
     systemdir = f"{IMG_DIR}/system/system"
     configdir = f"{IMG_DIR}/config"
     dynamic_fs_dir = f"{IMG_DIR}/dynamic_fs"
@@ -390,7 +390,7 @@ def get_dir_size(path) -> int:
                 size += 1
     return size
 
-def repack_image():
+def repack_image() -> int:
     systemdir = f"{IMG_DIR}/system"
     fs = f"{IMG_DIR}/config/system_fs_config"
     con = f"{IMG_DIR}/config/system_file_contexts"
@@ -417,7 +417,7 @@ def repack_image():
                 return 1
     return 0
 
-def clean_up():
+def clean_up() -> int:
     print("Cleaning up...")
     rm_rf(EXTRACT_DIR)
     rm_rf(os.path.join(IMG_DIR, "system"))
