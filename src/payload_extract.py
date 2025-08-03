@@ -109,10 +109,11 @@ def init_payload_info(reader: IO[bytes]) -> update_metadata_pb2.DeltaArchiveMani
     manifest = update_metadata_pb2.DeltaArchiveManifest.FromString(
         reader.read(hdr.manifest_len)
     )
+    """
     if manifest.minor_version != 0:
         raise BadPayload(
             f"delta payloads are not supported, please use a full payload file.manifest.minor_version = {manifest.minor_version}"
-        )
+        )"""
     reader.seek(hdr.manifest_sig_len, SEEK_CUR)
 
     return manifest
