@@ -13,7 +13,7 @@ import subprocess
 import sys
 import zipfile
 
-from src import imgextractor
+from src import imgextractor, ozipdecrypt
 from src.downloader import download
 from src.gettype import gettype
 from src.payload_extract import extract_partitions_from_payload
@@ -112,6 +112,10 @@ def select_file():
 
 
 def extract_rom(path: str):
+    if gettype(path) == 'ozip':
+        ozipdecrypt.main(path)
+        decrypted = os.path.dirname(path) + os.sep + os.path.basename(path)[:-4] + "zip"
+        path = decrypted
     if not zipfile.is_zipfile(path):
         print(f"[{path}] is not a ZIP file")
         return 1
