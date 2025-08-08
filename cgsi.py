@@ -185,6 +185,8 @@ def decompose_images():
 
 
 def rm_rf(path: str):
+    if not os.path.exists(path):
+        return
     if os.path.isfile(path) or readlink(path):
         os.remove(path)
     if os.path.isdir(path):
