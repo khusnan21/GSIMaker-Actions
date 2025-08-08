@@ -235,6 +235,29 @@ def modify_parts() -> int:
     os.makedirs(f"{IMG_DIR}/product/etc/selinux/mapping", exist_ok=True)
     with open(f"{IMG_DIR}/system_ext/etc/init/init.gsi.rc", 'w', encoding='utf-8') as f:
         f.write("\n")
+    for i in [
+        'persist.vendor.camera.selfie.unfold u:object_r:exported_system_prop:s0 exact int',
+'persist.vendor.camera.3rdhighResolutionBlob.scenes u:object_r:exported_system_prop:s0',
+'persist.vendor.camera.3rdvideocall.scenes u:object_r:exported_system_prop:s0',
+'persist.vendor.camera.3rdvideo.scenes u:object_r:exported_system_prop:s0',
+'persist.vendor.camera.3rdlive.scenes u:object_r:exported_system_prop:s0',
+'persist.vendor.camera.cloud.    u:object_r:exported_system_prop:s0',
+'persist.vendor.camera.traceGroupsEnable u:object_r:exported_system_prop:s0 exact string',
+'persist.vendor.camera.gadget       u:object_r:exported_system_prop:s0',
+'ro.vendor.camera.interpolation.mialgo.support        u:object_r:exported_system_prop:s0',
+'vendor.camera.sensor.logsystem.unrelease u:object_r:exported_system_prop:s0 exact string',
+'persist.vendor.camera.facetracker.active   u:object_r:exported_system_prop:s0 exact int',
+'persist.vendor.camera.facetracker.enable   u:object_r:exported_system_prop:s0 exact int',
+'persist.vendor.camera.facetracker.fpsrange u:object_r:exported_system_prop:s0 exact string',
+'persist.vendor.camera.facetracker.rrzosize u:object_r:exported_system_prop:s0 exact string',
+'persist.vendor.camera.logentry      u:object_r:exported_system_prop:s0',
+'persist.vendor.camera.gesture.emoji.support u:object_r:exported_system_prop:s0 exact int',
+'persist.vendor.camera.gesture.emoji.enable u:object_r:exported_system_prop:s0 exact int',
+'persist.vendor.camera.gesture.emoji.active u:object_r:exported_system_prop:s0 exact int',
+'persist.vendor.cameraopt.loglevel u:object_r:exported_system_prop:s0',
+'persist.vendor.camera.IsStreetModeSupported u:object_r:camera_config_prop:s0 exact bool',
+'persist.vendor.camera.facetracker.support  u:object_r:camera_config_prop:s0 exact int',]:
+        replace(f"{IMG_DIR}/system_ext/etc/selinux/system_ext_property_contexts", i+"\n", '')
     vndk = get_prop(f"{systemdir}/system/build.prop", "ro.system.build.version.sdk")
     manufacturer = get_prop(f"{systemdir}/system/build.prop", "ro.product.system.manufacturer")
     is_hyper_os = get_prop(f"{systemdir}/system/build.prop", "ro.build.version.incremental")
