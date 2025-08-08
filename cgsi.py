@@ -185,6 +185,9 @@ def decompose_images():
 
 
 def rm_rf(path: str):
+    if os.name == 'posix':
+        if readlink(path):
+            os.remove(path)
     if not os.path.exists(path):
         return
     if os.path.isfile(path) or readlink(path):
@@ -425,6 +428,7 @@ def repack_image() -> int:
 def clean_up() -> int:
     print("Cleaning up...")
     rm_rf(EXTRACT_DIR)
+    rm_rf(IMG_DIR)
     rm_rf(os.path.join(IMG_DIR, "system"))
     rm_rf(os.path.join(IMG_DIR, "config"))
     print("Done.")
@@ -470,8 +474,8 @@ def main() -> int:
         return 1
     if decompose_images():
         return 1
-    if modify_parts():
-        return 1
+    """if modify_parts():
+        return 1"""
     if merge_my():
         return 1
     if merge_parts_inside(["system_ext", "product"]):
