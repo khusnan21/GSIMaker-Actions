@@ -237,6 +237,7 @@ def modify_parts() -> int:
         f.write("\n")
     vndk = get_prop(f"{systemdir}/system/build.prop", "ro.system.build.version.sdk")
     manufacturer = get_prop(f"{systemdir}/system/build.prop", "ro.product.system.manufacturer")
+    is_hyper_os = get_prop(f"{systemdir}/system/build.prop", "ro.build.version.incremental")
     replace(f"{systemdir}/system/etc/init/apexd.rc", "    reboot_on_failure reboot,apexd-failed\n", "    #Removed\n")
     replace(f"{systemdir}/system/etc/init/apexd.rc", "    reboot_on_failure reboot,bootloader,bootstrap-apexd-failed\n", "    #Removed\n")
     replace(f"{systemdir}/system/etc/init/hw/init.rc", "    reboot_on_failure reboot,boringssl-self-check-failed\n", "    #Removed\n")
@@ -379,8 +380,9 @@ def modify_parts() -> int:
             f.write(i+"\n")
     if manufacturer == "Xiaomi":
         print("ROM:Xiaomi")
-        if vndk == '34':
-            copytree(f"{BIN_DIR}/files/miui/product", f"{IMG_DIR}/product")
+        copytree(f"{BIN_DIR}/files/miui/product/device_features", f"{IMG_DIR}/product/device_features")
+        if is_hyper_os.startswith("OS2"):
+            copytree(f"{BIN_DIR}/files/miui/product/etc", f"{IMG_DIR}/product/etc")
         with open(f"{systemdir}/system/build.prop", 'a+', encoding='utf-8') as f, open(
                 f"{BIN_DIR}/build/miui/system.prop", 'r', encoding='utf-8') as o:
             f.write("\n")
