@@ -22,6 +22,7 @@ from src.sdat2img import Sdat2img
 from shutil import rmtree, move, copy, copytree, which
 from src.fspatch import main as fspatch
 from src.contextpatch import main as contextpatch
+
 if os.name == 'nt':
     import ctypes
 
@@ -205,6 +206,17 @@ def get_prop(file: str, name: str) -> str:
                     return value.strip()
     return ""
 
+def replace(file:str,origin:str, repl:str) -> int:
+    with open(file, "r+", encoding='utf-8') as f:
+        lines = f.readlines()
+        f.seek(0)
+        f.truncate()
+        for i in lines:
+            if i == origin:
+                f.write(repl)
+            else:
+                f.write(i)
+    return 0
 
 def modify_parts() -> int:
     systemdir = f"{IMG_DIR}/system"
@@ -225,12 +237,23 @@ def modify_parts() -> int:
         f.write("\n")
     vndk = get_prop(f"{systemdir}/system/build.prop", "ro.system.build.version.sdk")
     manufacturer = get_prop(f"{systemdir}/system/build.prop", "ro.product.system.manufacturer")
+    replace(f"{systemdir}/system/etc/init/apexd.rc", "    reboot_on_failure reboot,apexd-failed\n", "    #Removed\n")
+    replace(f"{systemdir}/system/etc/init/apexd.rc", "    reboot_on_failure reboot,bootloader,bootstrap-apexd-failed\n", "    #Removed\n")
+    replace(f"{systemdir}/system/etc/init/hw/init.rc", "    reboot_on_failure reboot,boringssl-self-check-failed\n", "    #Removed\n")
+    rm_rf(f"{systemdir}/system/etc/init/config")
+    rm_rf(f"{systemdir}/system/etc/init/cppreopts.rc")
+    rm_rf(f"{systemdir}/system/etc/init/otapreopt.rc")
+    rm_rf(f"{systemdir}/system/etc/init/update_verifier.rc")
+    rm_rf(f"{systemdir}/system/etc/init/update_engine.rc")
+    rm_rf(f"{systemdir}/system/etc/init/recovery-refresh.rc")
+    rm_rf(f"{systemdir}/system/etc/init/recovery-persist.rc")
     with open(f"{systemdir}/system/build.prop", 'r+', encoding='utf-8') as f:
         lines = f.readlines()
         lines = [i for i in lines if "media.settings.xml=/vendor/etc/media_profiles_vendor.xml" not in i]
         lines = [i for i in lines if "ro.actionable_compatible_property.enabled=true" not in i]
         lines = [i for i in lines if "ro.secure=1" not in i]
         lines = [i for i in lines if "ro.debuggable=0" not in i]
+        lines = [i for i in lines if "ro.apex.updatable=false" not in i]
         f.seek(0)
         f.truncate()
         lines.append("ro.build.system_root_image=true\n")
@@ -251,22 +274,45 @@ def modify_parts() -> int:
         lines.append("ro.secure=0\n")
         lines.append("ro.debuggable=1\n")
         for p in ['# Some devices have sdcardfs kernel panicing on 8.0, Disable for everyone for the moment',
- 'ro.sys.sdcardfs=0persist.bluetooth.system_audio_hal.enabled=1',
- 'bluetooth.profile.asha.central.enabled=true',
- 'bluetooth.profile.a2dp.source.enabled=true',
- 'bluetooth.profile.avrcp.target.enabled=true',
- 'bluetooth.profile.bas.client.enabled=true',
- 'bluetooth.profile.gatt.enabled=true',
- 'bluetooth.profile.hfp.ag.enabled=true',
- 'bluetooth.profile.hid.device.enabled=true',
- 'bluetooth.profile.hid.host.enabled=true',
- 'bluetooth.profile.map.server.enabled=true',
- 'bluetooth.profile.opp.enabled=true',
- 'bluetooth.profile.pan.nap.enabled=true',
- 'bluetooth.profile.pan.panu.enabled=true',
- 'bluetooth.profile.pbap.server.enabled=true',
- 'bluetooth.profile.sap.server.enabled=true']:
-            lines.append(p+"\n")
+                  'ro.sys.sdcardfs=0persist.bluetooth.system_audio_hal.enabled=1',
+                  'bluetooth.profile.asha.central.enabled=true',
+                  'bluetooth.profile.a2dp.source.enabled=true',
+                  'bluetooth.profile.avrcp.target.enabled=true',
+                  'bluetooth.profile.bas.client.enabled=true',
+                  'bluetooth.profile.gatt.enabled=true',
+                  'bluetooth.profile.hfp.ag.enabled=true',
+                  'bluetooth.profile.hid.device.enabled=true',
+                  'bluetooth.profile.hid.host.enabled=true',
+                  'bluetooth.profile.map.server.enabled=true',
+                  'bluetooth.profile.opp.enabled=true',
+                  'bluetooth.profile.pan.nap.enabled=true',
+                  'bluetooth.profile.pan.panu.enabled=true',
+                  'bluetooth.profile.pbap.server.enabled=true',
+                  'bluetooth.profile.sap.server.enabled=true',
+                  '# Force triple frame buffers', '# ro.surface_flinger.max_frame_buffer_acquired_buffers=3',
+                  '# Fix developer settings', 'ro.oem_unlock_supported=1', '# BT Fix',
+                  '# BT Fix',
+                  'persist.bluetooth.a2dp_offload.cap=sbc-aac-aptx-aptxhd-ldac',
+                  'persist.bluetooth.a2dp_offload.disabled=false',
+                  'persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aptx-aptxtws-aptxhd-aac-ldac',
+                  'persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=false',
+                  'persist.vendor.qcom.bluetooth.enable.splita2dp=true',
+                  'persist.vendor.qcom.bluetooth.scram.enabled=true',
+                  'persist.vendor.qcom.bluetooth.soc=cherokee',
+                  'persist.vendor.qcom.bluetooth.twsp_state.enabled=false',
+                  'ro.bluetooth.a2dp_offload.supported=true',
+                  'ro.vendor.bluetooth.wipower=false',
+                  'vendor.qcom.bluetooth.soc=cherokee',
+                  'persist.bluetooth.bluetooth_audio_hal.disabled=false',
+                  'persist.bluetooth.bluetooth_audio_hal.enabled=true',
+                  '# SIM Fix',
+                  'ro.multisim.simslotcount=2',
+                  'ro.vendor.multisim.simslotcount=2',
+                  'persist.radio.multisim.config=dsds',
+                  'persist.vendor.radio.msimode=dsds',
+            "ro.apex.updatable=true"
+                  ]:
+            lines.append(p + "\n")
         f.writelines(lines)
     if os.path.isdir(f"{BIN_DIR}/init/v{vndk}"):
         copy(f"{BIN_DIR}/init/v{vndk}/init", f"{systemdir}/system/bin/init")
@@ -286,6 +332,12 @@ def modify_parts() -> int:
                 f"{BIN_DIR}/build/miui/product.prop", 'r', encoding='utf-8') as o:
             f.write("\n")
             f.writelines(o.readlines())
+        with open(f"{IMG_DIR}/product/etc/build.prop", "a+", encoding='utf-8') as f:
+            f.write("\n")
+            f.writelines([i+"\n" for i in [
+                "# You can nuke this if necessary","sys.miui.ndcd=off","# MIUI CN bpfloader-failed fix (by romashkagene heh)","ro.miui.region=gb",
+                "# MIUI launcher fix", "ro.miui.product.home=com.miui.home",
+            ]])
     if manufacturer in ["meizu", 'vivo'] and vndk == '34':
         print("ROM:Flyme")
         copytree(f"{BIN_DIR}/files/flyme/system/apex", f"{systemdir}/system/apex", dirs_exist_ok=True)
@@ -424,6 +476,7 @@ def merge_parts_inside(parts: list) -> int:
     rm_rf(dynamic_fs_dir)
     return 0
 
+
 def get_dir_size(path) -> int:
     size = 0
     for root, _, files in os.walk(path):
@@ -437,6 +490,7 @@ def get_dir_size(path) -> int:
                 size += 1
     return size
 
+
 def repack_image() -> int:
     systemdir = f"{IMG_DIR}/system"
     fs = f"{IMG_DIR}/config/system_fs_config"
@@ -446,12 +500,15 @@ def repack_image() -> int:
     os.makedirs(f"{IMG_DIR}/out", exist_ok=True)
     choice = input("Choose a FileSystem to Repack:[ext(default)/erofs]")
     if choice == "erofs":
-        return call(["mkfs.erofs", "-zlz4hc,9", "--mount-point", f"/system", "--fs-config-file", f"{IMG_DIR}/config/system_fs_config",
-                     "--file-contexts", f"{IMG_DIR}/config/system_file_contexts", f"{IMG_DIR}/out/system.img", f"{IMG_DIR}/system"], out_=False)
+        return call(["mkfs.erofs", "-zlz4hc,9", "--mount-point", f"/system", "--fs-config-file",
+                     f"{IMG_DIR}/config/system_fs_config",
+                     "--file-contexts", f"{IMG_DIR}/config/system_file_contexts", f"{IMG_DIR}/out/system.img",
+                     f"{IMG_DIR}/system"], out_=False)
     else:
         size = get_dir_size(systemdir)
-        size2 = int(size / 4096 + 4096*10)
-        if call(['mke2fs', '-O', '^has_journal', '-t', 'ext4', '-b', '4096', '-L', 'system', '-I', '256', '-M', '/system', f'{IMG_DIR}/out/system.img', f'{size2}']):
+        size2 = int(size / 4096 + 4096 * 10)
+        if call(['mke2fs', '-O', '^has_journal', '-t', 'ext4', '-b', '4096', '-L', 'system', '-I', '256', '-M',
+                 '/system', f'{IMG_DIR}/out/system.img', f'{size2}']):
             return 1
         if call(
                 ['e2fsdroid', '-e', '-T', '1230768000', '-C', f'{IMG_DIR}/config/system_fs_config', '-S',
@@ -460,9 +517,10 @@ def repack_image() -> int:
         ):
             return 1
         if which("resize2fs"):
-            if call(["resize2fs","-M", f'{IMG_DIR}/out/system.img'], extra_path=False):
+            if call(["resize2fs", "-M", f'{IMG_DIR}/out/system.img'], extra_path=False):
                 return 1
     return 0
+
 
 def clean_up() -> int:
     print("Cleaning up...")
@@ -472,6 +530,7 @@ def clean_up() -> int:
     rm_rf(os.path.join(IMG_DIR, "config"))
     print("Done.")
     return 0
+
 
 def main() -> int:
     if check_tools():
