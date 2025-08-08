@@ -1,6 +1,12 @@
 # OEM Generic System Image Maker
 ## Usage
 
+> [!WARNING]
+> 
+> The Tool Is In Developing.
+> 
+> The Gsi cerated may not bootable.
+
 - First, You need to install python3
 ```shell
 sudo apt install python3-full
