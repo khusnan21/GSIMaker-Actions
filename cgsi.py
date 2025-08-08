@@ -380,6 +380,9 @@ def modify_parts() -> int:
             f.write(i+"\n")
     if manufacturer == "Xiaomi":
         print("ROM:Xiaomi")
+        for i in ["Polaris", "MiuiDaemon"]:
+            if os.path.exists(f"{IMG_DIR}/system_ext/app/{i}"):
+                rm_rf(f"{IMG_DIR}/system_ext/app/{i}")
         copytree(f"{BIN_DIR}/files/miui/product/device_features", f"{IMG_DIR}/product/device_features")
         if is_hyper_os.startswith("OS2"):
             copytree(f"{BIN_DIR}/files/miui/product/etc", f"{IMG_DIR}/product/etc")
@@ -510,6 +513,7 @@ def merge_parts_inside(parts: list) -> int:
                 ...
         with open(skip_mount_file, 'a+', encoding='utf-8') as f:
             f.write(f"/{partition}\n")
+            f.write(f"/{partition}/*\n")
         if os.path.exists(os.path.join(dynamic_fs_dir, f"{partition}_file_contexts")):
             with open(os.path.join(dynamic_fs_dir, f"{partition}_file_contexts"), 'r+', encoding='utf-8') as f:
                 lines = [i for i in f.readlines() if not i.startswith('/ u:')]
