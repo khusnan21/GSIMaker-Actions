@@ -208,9 +208,15 @@ def get_prop(file: str, name: str) -> str:
 
 def modify_parts() -> int:
     systemdir = f"{IMG_DIR}/system"
-    if readlink(f"{systemdir}/cache"):
-        rm_rf(f"{systemdir}/cache")
-        os.makedirs(f"{systemdir}/cache")
+    # Avoid flashing wrong rec
+    rm_rf(f"{systemdir}/init.recovery.hardware.rc")
+    rm_rf(f"{systemdir}/cache")
+    os.makedirs(f"{systemdir}/cache")
+    for i in ["bt_firmware", "dsp", "firmware", "lost+found", "persist"]:
+        if not os.path.exists(f"{systemdir}/{i}"):
+            os.makedirs(f"{systemdir}/{i}", exist_ok=True)
+    for i in ["update_engine", "update_verifier"]:
+        rm_rf(f"{systemdir}/system/bin/{i}")
     rm_rf(f"{IMG_DIR}/system_ext/etc/selinux/mapping")
     os.makedirs(f"{IMG_DIR}/system_ext/etc/selinux/mapping", exist_ok=True)
     rm_rf(f"{IMG_DIR}/product/etc/selinux/mapping")
@@ -222,8 +228,12 @@ def modify_parts() -> int:
     with open(f"{systemdir}/system/build.prop", 'r+', encoding='utf-8') as f:
         lines = f.readlines()
         lines = [i for i in lines if "media.settings.xml=/vendor/etc/media_profiles_vendor.xml" not in i]
+        lines = [i for i in lines if "ro.actionable_compatible_property.enabled=true" not in i]
+        lines = [i for i in lines if "ro.secure=1" not in i]
+        lines = [i for i in lines if "ro.debuggable=0" not in i]
         f.seek(0)
         f.truncate()
+        lines.append("")
         lines.append("persist.sys.usb.config=adb,mtp\n")
         lines.append("ro.adb.secure=0\n")
         lines.append("ro.secure=0\n")
@@ -474,8 +484,8 @@ def main() -> int:
         return 1
     if decompose_images():
         return 1
-    """if modify_parts():
-        return 1"""
+    if modify_parts():
+        return 1
     if merge_my():
         return 1
     if merge_parts_inside(["system_ext", "product"]):
