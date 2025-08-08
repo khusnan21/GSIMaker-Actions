@@ -379,6 +379,7 @@ def modify_parts() -> int:
             f.write(i+"\n")
     if manufacturer == "Xiaomi":
         print("ROM:Xiaomi")
+        copytree(f"{BIN_DIR}/files/miui/product", f"{IMG_DIR}/product")
         with open(f"{systemdir}/system/build.prop", 'a+', encoding='utf-8') as f, open(
                 f"{BIN_DIR}/build/miui/system.prop", 'r', encoding='utf-8') as o:
             f.write("\n")
@@ -398,6 +399,8 @@ def modify_parts() -> int:
         copytree(f"{BIN_DIR}/files/flyme/system/apex", f"{systemdir}/system/apex", dirs_exist_ok=True)
         copytree(f"{BIN_DIR}/files/flyme/product/overlay", f"{IMG_DIR}/product/overlay", dirs_exist_ok=True)
     copytree(f"{BIN_DIR}/apex", f"{systemdir}/system/apex", dirs_exist_ok=True)
+    copytree(f"{BIN_DIR}/phh/system", f"{systemdir}/system/system", dirs_exist_ok=True)
+    copytree(f"{BIN_DIR}/phh/product/app", f"{IMG_DIR}/product/app", dirs_exist_ok=True)
     rm_rf(f"{IMG_DIR}/system_ext/apex")
     return 0
 
