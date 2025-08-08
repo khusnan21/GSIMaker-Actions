@@ -325,6 +325,16 @@ def modify_parts() -> int:
             f"{BIN_DIR}/init/v{vndk}/libfs_mgr_binder.so", f"{systemdir}/system/lib64/libfs_mgr_binder.so")
     else:
         print("suitable init not found")
+    with open(f"{systemdir}/system/etc/selinux/plat_file_contexts", 'a+', encoding="utf-8") as f:
+        for i in ["/system/bin/vndk-detect			u:object_r:update_engine_exec:s0",
+                  "/system/etc/usb_audio_policy_configuration.xml	u:object_r:vendor_configs_file:s0",
+                  "/system/bin/rw-system.sh u:object_r:update_engine_exec:s0",
+            "/system/bin/phh-on-boot.sh u:object_r:update_engine_exec:s0","/system/bin/phh-on-data.sh u:object_r:update_engine_exec:s0",
+            "/system/bin/phh-prop-handler.sh u:object_r:update_engine_exec:s0","/system/bin/phh-remotectl.sh u:object_r:update_engine_exec:s0",
+            "/system/bin/wificonf u:object_r:wificond_exec:s0","/system/bin/permissiver.sh			u:object_r:update_engine_exec:s0","/system/bin/hdrfix_post-data.sh			u:object_r:update_engine_exec:s0",
+
+                  ]:
+            f.write(i+"\n")
     if manufacturer == "Xiaomi":
         print("ROM:Xiaomi")
         with open(f"{systemdir}/system/build.prop", 'a+', encoding='utf-8') as f, open(
