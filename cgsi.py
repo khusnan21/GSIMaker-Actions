@@ -249,6 +249,12 @@ def modify_parts() -> int:
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.vendor.build.ab_ota_partitions u:object_r:ota_build_prop:s0 exact string\n", "\n")
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.vendor.camera.extensions.package u:object_r:camera2_extensions_prop:s0 exact string\n", "\n")
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.vendor.camera.extensions.service u:object_r:camera2_extensions_prop:s0 exact string\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "sys.usb.config     u:object_r:usb_control_prop:s0 exact string\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "sys.usb.configfs   u:object_r:usb_control_prop:s0 exact int\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "sys.usb.controller u:object_r:usb_control_prop:s0 exact string\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "sys.usb.config. u:object_r:usb_prop:s0\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.opengles.version u:object_r:graphics_config_prop:s0 exact int\n", "\n")
     rm_rf(f"{systemdir}/system/etc/init/config")
     rm_rf(f"{systemdir}/system/etc/init/cppreopts.rc")
     rm_rf(f"{systemdir}/system/etc/init/otapreopt.rc")
@@ -256,6 +262,9 @@ def modify_parts() -> int:
     rm_rf(f"{systemdir}/system/etc/init/update_engine.rc")
     rm_rf(f"{systemdir}/system/etc/init/recovery-refresh.rc")
     rm_rf(f"{systemdir}/system/etc/init/recovery-persist.rc")
+    rm_rf(f"{systemdir}/system/priv-app/LocalTransport")
+    rm_rf(f"{systemdir}/system/priv-app/ONS")
+    rm_rf(f"{systemdir}/system/priv-app/Tag")
     with open(f"{systemdir}/system/build.prop", 'r+', encoding='utf-8') as f:
         lines = f.readlines()
         lines = [i for i in lines if "media.settings.xml=/vendor/etc/media_profiles_vendor.xml" not in i]
