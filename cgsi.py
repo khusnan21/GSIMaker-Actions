@@ -948,10 +948,11 @@ r'/system/system/bin/rw-system\.sh u:object_r:update_engine_exec:s0',
     return 0
 
 
-def clean_up() -> int:
+def clean_up(clean_img_dir=False) -> int:
     print("Cleaning up...")
     rm_rf(EXTRACT_DIR)
-    rm_rf(IMG_DIR)
+    if clean_img_dir:
+        rm_rf(IMG_DIR)
     rm_rf(os.path.join(IMG_DIR, "system"))
     rm_rf(os.path.join(IMG_DIR, "config"))
     print("Done.")
