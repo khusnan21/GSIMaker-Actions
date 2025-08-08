@@ -879,7 +879,6 @@ def repack_image() -> int:
     systemdir = f"{IMG_DIR}/system"
     fs = f"{IMG_DIR}/config/system_fs_config"
     con = f"{IMG_DIR}/config/system_file_contexts"
-    fspatch(systemdir, fs)
     with open(fs, 'a+', encoding='utf-8') as f:
         for i in ['system/system/bin/bootctl 0 2000 0755',
 'system/system/bin/busybox_phh 0 2000 0755',
@@ -922,6 +921,7 @@ r'/system/system/bin/phh-on-boot\.sh u:object_r:update_engine_exec:s0',
 r'/system/system/bin/rw-system\.sh u:object_r:update_engine_exec:s0',
         ]:
             f.write(i + '\n')
+    fspatch(systemdir, fs)
     contextpatch(systemdir, con)
     os.makedirs(f"{IMG_DIR}/out", exist_ok=True)
     choice = input("Choose a FileSystem to Repack:[ext(default)/erofs]")
