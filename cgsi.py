@@ -243,6 +243,12 @@ def modify_parts() -> int:
     replace(f"{systemdir}/system/etc/init/vold.rc", "    group root reserved_disk\n", "    #Removed\n")
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "/system/bin/logcat	--	u:object_r:logcat_exec:s0", "/system/bin/logcat	--	u:object_r:logd_exec:s0")
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "/system/bin/logcatd	--	u:object_r:logcat_exec:s0", "/system/bin/logcatd	--	u:object_r:logd_exec:s0")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "# ro.build.fingerprint is either set in /system/build.prop, or is\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.build.fingerprint    u:object_r:fingerprint_prop:s0 exact string\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.product.ab_ota_partitions u:object_r:ota_prop:s0 exact string\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.vendor.build.ab_ota_partitions u:object_r:ota_build_prop:s0 exact string\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.vendor.camera.extensions.package u:object_r:camera2_extensions_prop:s0 exact string\n", "\n")
+    replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.vendor.camera.extensions.service u:object_r:camera2_extensions_prop:s0 exact string\n", "\n")
     rm_rf(f"{systemdir}/system/etc/init/config")
     rm_rf(f"{systemdir}/system/etc/init/cppreopts.rc")
     rm_rf(f"{systemdir}/system/etc/init/otapreopt.rc")
@@ -509,6 +515,48 @@ def repack_image() -> int:
     fs = f"{IMG_DIR}/config/system_fs_config"
     con = f"{IMG_DIR}/config/system_file_contexts"
     fspatch(systemdir, fs)
+    with open(fs, 'a+', encoding='utf-8') as f:
+        for i in ['system/system/bin/bootctl 0 2000 0755',
+'system/system/bin/busybox_phh 0 2000 0755',
+'system/system/bin/getSPL 0 2000 0755',
+'system/system/bin/gsid 0 2000 0755',
+'system/system/bin/objdump 0 2000 0755',
+'system/system/bin/phh-on-boot.sh 0 2000 0755',
+'system/system/bin/rw-system.sh 0 2000 0755',
+'system/system/bin/vintf 0 2000 0755',
+'system/system/bin/vndk-detect 0 2000 0755',
+'system/system/bin/wificonf 0 2000 0755',
+'system/system/etc/init/config 0 0 0755',
+'system/system/etc/init/config/skip_mount.cfg 0 0 0644',
+'system/system/system_ext/etc/init 0 0 0755',
+'system/system/system_ext/etc/init/config 0 0 0755',
+'system/system/system_ext/etc/init/config/skip_mount.cfg 0 0 0644',
+'system/system/etc/init/gsid.rc 0 0 0644',
+'system/system/etc/init/vndk.rc 0 0 0644',
+'system/system/etc/init/wificonf.rc 0 0 0644',
+'system/system/etc/usb_audio_policy_configuration.xml 0 0 0644']:
+            f.write(i + '\n')
+    with open(con, 'a+', encoding='utf-8') as f:
+        for i in [
+        '/system/system/bin/bootctl u:object_r:system_file:s0',
+'/system/system/bin/busybox_phh u:object_r:system_file:s0',
+'/system/system/bin/getSPL u:object_r:system_file:s0',
+'/system/system/bin/gsid u:object_r:gsid_exec:s0',
+'/system/system/bin/vintf u:object_r:system_file:s0',
+'/system/system/bin/vndk-detect u:object_r:update_engine_exec:s0',
+'/system/system/bin/wificonf u:object_r:wificond_exec:s0',
+'/system/system/etc/init/config u:object_r:system_file:s0',
+'/system/system/etc/init/config/skip_mount\.cfg u:object_r:system_file:s0',
+'/system/system/system_ext/etc/init u:object_r:system_file:s0',
+'/system/system/system_ext/etc/init/config u:object_r:system_file:s0',
+'/system/system/system_ext/etc/init/config/skip_mount\.cfg u:object_r:system_file:s0',
+'/system/system/etc/init/vndk\.rc u:object_r:system_file:s0',
+'/system/system/etc/init/wificonf\.rc u:object_r:system_file:s0',
+'/system/system/etc/usb_audio_policy_configuration\.xml u:object_r:vendor_configs_file:s0',
+'/system/system/bin/phh-on-boot\.sh u:object_r:update_engine_exec:s0',
+'/system/system/bin/rw-system\.sh u:object_r:update_engine_exec:s0',
+        ]:
+            f.write(i + '\n')
     contextpatch(systemdir, con)
     os.makedirs(f"{IMG_DIR}/out", exist_ok=True)
     choice = input("Choose a FileSystem to Repack:[ext(default)/erofs]")
