@@ -962,7 +962,7 @@ def clean_up(clean_img_dir=False) -> int:
 def main() -> int:
     if check_tools():
         return 1
-    clean_up()
+    clean_up(True)
     if not os.path.exists(IMG_DIR):
         os.makedirs(IMG_DIR)
     if not os.path.exists(EXTRACT_DIR):
