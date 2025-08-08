@@ -233,11 +233,40 @@ def modify_parts() -> int:
         lines = [i for i in lines if "ro.debuggable=0" not in i]
         f.seek(0)
         f.truncate()
-        lines.append("")
-        lines.append("persist.sys.usb.config=adb,mtp\n")
+        lines.append("ro.build.system_root_image=true\n")
+        lines.append("ro.support_one_handed_mode=true\n")
+        lines.append("persist.sys.binary_xml=false\n")
+        lines.append("persist.logd.logpersistd.buffer=0\n")
+        lines.append("ro.opengles.version=196610\n")
+        lines.append("persist.sys.disable_rescue=true\n")
+        lines.append("ro.control_privapp_permissions=disable\n")
+        lines.append("ro.cp_system_other_odex=0\n")
+        lines.append("ro.nnapi.extensions.deny_on_product=true\n")
+        lines.append("\n")
+        lines.append("# Start adbd\n")
+        lines.append("persist.service.adb.enable=1\n")
+        lines.append("persist.service.debuggable=1\n")
+        lines.append("persist.sys.usb.config=mtp,adb\n")
         lines.append("ro.adb.secure=0\n")
         lines.append("ro.secure=0\n")
         lines.append("ro.debuggable=1\n")
+        for p in ['# Some devices have sdcardfs kernel panicing on 8.0, Disable for everyone for the moment',
+ 'ro.sys.sdcardfs=0persist.bluetooth.system_audio_hal.enabled=1',
+ 'bluetooth.profile.asha.central.enabled=true',
+ 'bluetooth.profile.a2dp.source.enabled=true',
+ 'bluetooth.profile.avrcp.target.enabled=true',
+ 'bluetooth.profile.bas.client.enabled=true',
+ 'bluetooth.profile.gatt.enabled=true',
+ 'bluetooth.profile.hfp.ag.enabled=true',
+ 'bluetooth.profile.hid.device.enabled=true',
+ 'bluetooth.profile.hid.host.enabled=true',
+ 'bluetooth.profile.map.server.enabled=true',
+ 'bluetooth.profile.opp.enabled=true',
+ 'bluetooth.profile.pan.nap.enabled=true',
+ 'bluetooth.profile.pan.panu.enabled=true',
+ 'bluetooth.profile.pbap.server.enabled=true',
+ 'bluetooth.profile.sap.server.enabled=true']:
+            lines.append(p+"\n")
         f.writelines(lines)
     if os.path.isdir(f"{BIN_DIR}/init/v{vndk}"):
         copy(f"{BIN_DIR}/init/v{vndk}/init", f"{systemdir}/system/bin/init")
