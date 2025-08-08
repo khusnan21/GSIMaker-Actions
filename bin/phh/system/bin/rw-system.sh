@@ -1070,10 +1070,10 @@ fi
 
 mount -o bind /mnt/phh/empty_dir /vendor/app/qti-logkit
 mount -o bind /mnt/phh/empty_dir /vendor/app/qti-logkit-lite
-mount -o bind /system/mystic/vo /vendor/overlay || true
+mount -o bind /system/mygsi/vo /vendor/overlay || true
 mount -o bind /mnt/phh/empty /vendor/apex || true
-mount -o bind /system/mystic/group /vendor/etc/group || true
-mount -o bind /system/mystic/passwd /vendor/etc/passwd || true
+mount -o bind /system/mygsi/group /vendor/etc/group || true
+mount -o bind /system/mygsi/passwd /vendor/etc/passwd || true
 mount -o bind /system/lib/vndk-"$vndk"/libgui.so /vendor/lib/libgui_vendor.so || true
 mount -o bind /system/lib64/vndk-"$vndk"/libgui.so /vendor/lib64/libgui_vendor.so || true
 
@@ -1168,10 +1168,10 @@ fi
 
 mount -o bind /mnt/phh/empty_dir /vendor/app/qti-logkit
 mount -o bind /mnt/phh/empty_dir /vendor/app/qti-logkit-lite
-mount -o bind /system/mystic/vo /vendor/overlay || true
+mount -o bind /system/mygsi/vo /vendor/overlay || true
 mount -o bind /mnt/phh/empty /vendor/apex || true
-mount -o bind /system/mystic/group /vendor/etc/group || true
-mount -o bind /system/mystic/passwd /vendor/etc/passwd || true
+mount -o bind /system/mygsi/group /vendor/etc/group || true
+mount -o bind /system/mygsi/passwd /vendor/etc/passwd || true
 mount -o bind /system/lib/vndk-"$vndk"/libgui.so /vendor/lib/libgui_vendor.so || true
 mount -o bind /system/lib64/vndk-"$vndk"/libgui.so /vendor/lib64/libgui_vendor.so || true
 
