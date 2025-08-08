@@ -379,7 +379,8 @@ def modify_parts() -> int:
             f.write(i+"\n")
     if manufacturer == "Xiaomi":
         print("ROM:Xiaomi")
-        copytree(f"{BIN_DIR}/files/miui/product", f"{IMG_DIR}/product")
+        if vndk == '34':
+            copytree(f"{BIN_DIR}/files/miui/product", f"{IMG_DIR}/product")
         with open(f"{systemdir}/system/build.prop", 'a+', encoding='utf-8') as f, open(
                 f"{BIN_DIR}/build/miui/system.prop", 'r', encoding='utf-8') as o:
             f.write("\n")
