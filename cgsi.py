@@ -911,15 +911,15 @@ def repack_image() -> int:
 '/system/system/bin/vndk-detect u:object_r:update_engine_exec:s0',
 '/system/system/bin/wificonf u:object_r:wificond_exec:s0',
 '/system/system/etc/init/config u:object_r:system_file:s0',
-'/system/system/etc/init/config/skip_mount\.cfg u:object_r:system_file:s0',
+r'/system/system/etc/init/config/skip_mount\.cfg u:object_r:system_file:s0',
 '/system/system/system_ext/etc/init u:object_r:system_file:s0',
 '/system/system/system_ext/etc/init/config u:object_r:system_file:s0',
-'/system/system/system_ext/etc/init/config/skip_mount\.cfg u:object_r:system_file:s0',
-'/system/system/etc/init/vndk\.rc u:object_r:system_file:s0',
-'/system/system/etc/init/wificonf\.rc u:object_r:system_file:s0',
-'/system/system/etc/usb_audio_policy_configuration\.xml u:object_r:vendor_configs_file:s0',
-'/system/system/bin/phh-on-boot\.sh u:object_r:update_engine_exec:s0',
-'/system/system/bin/rw-system\.sh u:object_r:update_engine_exec:s0',
+r'/system/system/system_ext/etc/init/config/skip_mount\.cfg u:object_r:system_file:s0',
+r'/system/system/etc/init/vndk\.rc u:object_r:system_file:s0',
+r'/system/system/etc/init/wificonf\.rc u:object_r:system_file:s0',
+r'/system/system/etc/usb_audio_policy_configuration\.xml u:object_r:vendor_configs_file:s0',
+r'/system/system/bin/phh-on-boot\.sh u:object_r:update_engine_exec:s0',
+r'/system/system/bin/rw-system\.sh u:object_r:update_engine_exec:s0',
         ]:
             f.write(i + '\n')
     contextpatch(systemdir, con)
