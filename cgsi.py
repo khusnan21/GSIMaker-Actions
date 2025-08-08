@@ -255,6 +255,33 @@ def modify_parts() -> int:
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "sys.usb.config. u:object_r:usb_prop:s0\n", "\n")
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool\n", "\n")
     replace(f"{systemdir}/system/etc/selinux/plat_file_contexts", "ro.opengles.version u:object_r:graphics_config_prop:s0 exact int\n", "\n")
+    replace(f"{IMG_DIR}/product/etc/build.prop", "ro.product.ab_ota_partitions=boot,product,system,system_ext,vendor\n", "\n")
+    with open(f"{IMG_DIR}/product/etc/build.prop", 'a+', encoding='utf-8') as f:
+        for i in [
+        'ro.cp_system_other_odex=0',
+'ro.nnapi.extensions.deny_on_product=true',
+'ro.lmk.kill_heaviest_task=true',
+'ro.lmk.kill_timeout_ms=100',
+'ro.lmk.use_minfree_levels=true',
+'ro.surface_flinger.vsync_event_phase_offset_ns=-1',
+'ro.surface_flinger.vsync_sf_event_phase_offset_ns=-1',
+'debug.sf.high_fps_late_app_phase_offset_ns=',
+'debug.sf.early_phase_offset_ns=',
+'debug.sf.early_gl_phase_offset_ns=',
+'debug.sf.early_app_phase_offset_ns=',
+'debug.sf.early_gl_app_phase_offset_ns=',
+'debug.sf.high_fps_late_sf_phase_offset_ns=',
+'debug.sf.high_fps_early_phase_offset_ns=',
+'debug.sf.high_fps_early_gl_phase_offset_ns=',
+'debug.sf.high_fps_early_app_phase_offset_ns=',
+'debug.sf.high_fps_early_gl_app_phase_offset_ns=',
+'qemu.hw.mainkeys=0',
+'ro.opa.eligible_device=true',
+'ro.setupwizard.mode=OPTIONAL',
+'ro.vndk.lite=false',
+'persist.sys.disable_rescue=true',
+'ro.control_privapp_permissions=disable',]:
+            f.write(i + '\n')
     rm_rf(f"{systemdir}/system/etc/init/config")
     rm_rf(f"{systemdir}/system/etc/init/cppreopts.rc")
     rm_rf(f"{systemdir}/system/etc/init/otapreopt.rc")
