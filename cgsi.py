@@ -702,7 +702,7 @@ def modify_parts() -> int:
             if os.path.exists(f"{IMG_DIR}/system_ext/app/{i}"):
                 rm_rf(f"{IMG_DIR}/system_ext/app/{i}")
         copytree(f"{BIN_DIR}/files/miui/product/device_features", f"{IMG_DIR}/product/device_features")
-        copytree(f"{BIN_DIR}/files/miui/system_ext/priv-app", f"{IMG_DIR}/system_ext/priv_app")
+        copytree(f"{BIN_DIR}/files/miui/system_ext/priv-app", f"{IMG_DIR}/system_ext/priv-app")
         if is_hyper_os.startswith("OS2"):
             copytree(f"{BIN_DIR}/files/miui/product/etc", f"{IMG_DIR}/product/etc")
         with open(f"{systemdir}/system/build.prop", 'a+', encoding='utf-8') as f, open(
