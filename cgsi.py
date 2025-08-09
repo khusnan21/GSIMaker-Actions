@@ -47,7 +47,7 @@ EXTRACT_DIR = os.path.join(prog_path, 'EXTRACT')
 tool_bin = os.path.join(prog_path, 'bin', platform.system(), platform.machine())
 BIN_DIR = os.path.join(prog_path, 'bin')
 img_files_list = ['my_bigball', 'my_carrier', 'my_engineering', 'my_heytap', 'my_manifest', 'my_product',
-                  'my_region', 'my_stock', 'product', 'system', 'system_ext', 'mi_ext']
+                  'my_region', 'my_stock', 'product', 'system', 'system_ext', 'mi_ext', 'vendor']
 
 
 def call(exe, extra_path=True, out_=None) -> int:
@@ -755,6 +755,35 @@ def modify_parts() -> int:
     rm_rf(f"{IMG_DIR}/system_ext/apex")
     return 0
 
+def generate_markdown(mark_down_file: str):
+    build_file = f"{IMG_DIR}/system/system/build.prop"
+    build_file_vendor = f"{IMG_DIR}/vendor/build.prop"
+    vndk = get_prop(build_file, "ro.system.build.version.sdk")
+    manufacturer = get_prop(build_file, "ro.product.system.manufacturer")
+    is_hyper_os = get_prop(build_file, "ro.build.version.incremental")
+    oem_os_dict = {
+        "Xiaomi":"MIUI","meizu":"Flyme","vivo":"OriginOS","BLUEFOX":"FoxOS"
+    }
+    with open(mark_down_file, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(f"#{f"HyperOS{is_hyper_os}" if is_hyper_os else oem_os_dict.get(manufacturer, manufacturer + "OS")}\n")
+        f.write(f"#Ported from {get_prop(build_file, 'ro.product.system.model')}({get_prop(build_file, 'ro.product.system.device')})\n")
+        f.write('\n')
+        f.write('#Info\n')
+        f.write("```\n")
+        f.write(f"Device brand: {get_prop(build_file, 'ro.product.system.brand')}\n")
+        f.write(f"Device manufacturer: {manufacturer}\n")
+        f.write(f"Device model: {get_prop(build_file, 'ro.product.system.model')}\n")
+        f.write(f"Device codename: {get_prop(build_file, 'ro.product.system.device')}\n")
+        f.write(f"Device board: {get_prop(build_file_vendor, 'ro.board.platform')}\n")
+        f.write(f"Android version: {get_prop(build_file, 'ro.system.build.version.release')}\n")
+        f.write(f"Android API: {vndk}\n")
+        f.write(f"Build fingerprint: {get_prop(build_file, 'ro.system.build.fingerprint')}\n")
+        f.write(f"Build type: {get_prop(build_file, 'ro.build.type')}\n")
+        f.write(f"Build tags: {get_prop(build_file, 'ro.build.tags')}\n")
+        f.write(f"Build ID: {get_prop(build_file, 'ro.build.id')}\n")
+        f.write(f"Security patch: {get_prop(build_file, 'ro.build.version.security_patch')}\n")
+        f.write(f"#Raw Image Size#\n")
+        f.write("```\n")
 
 def merge_my() -> int:
     systemdir = os.path.join(IMG_DIR, "system")
@@ -1027,6 +1056,8 @@ def main() -> int:
         return 1
     if modify_parts():
         return 1
+    if generate_markdown(f"{IMG_DIR}/out/info.md"):
+        return 1
     if merge_my():
         return 1
     if merge_parts_inside(["system_ext", "product"]):
@@ -1036,6 +1067,7 @@ def main() -> int:
     if clean_up():
         return 1
     print(f"Done!The GSi File is {IMG_DIR}/out/system.img.")
+    replace(f"{IMG_DIR}/out/info.md", "#Raw Image Size#\n", f"Raw Image Size: {round(os.path.getsize(f'{IMG_DIR}/out/system.img')/1024**3, 2)} GB")
     return 0
 
 
