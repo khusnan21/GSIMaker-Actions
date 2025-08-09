@@ -756,6 +756,8 @@ def modify_parts() -> int:
     return 0
 
 def generate_markdown(mark_down_file: str):
+    if not os.path.dirname(mark_down_file):
+        os.makedirs(os.path.dirname(mark_down_file), exist_ok=True)
     build_file = f"{IMG_DIR}/system/system/build.prop"
     build_file_vendor = f"{IMG_DIR}/vendor/build.prop"
     vndk = get_prop(build_file, "ro.system.build.version.sdk")
