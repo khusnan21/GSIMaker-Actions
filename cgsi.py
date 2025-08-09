@@ -767,10 +767,10 @@ def generate_markdown(mark_down_file: str):
         "Xiaomi":"MIUI","meizu":"Flyme","vivo":"OriginOS","BLUEFOX":"FoxOS"
     }
     with open(mark_down_file, 'w', encoding='utf-8', newline='\n') as f:
-        f.write(f"#{f"HyperOS{is_hyper_os}" if is_hyper_os else oem_os_dict.get(manufacturer, manufacturer + "OS")}\n")
-        f.write(f"#Ported from {get_prop(build_file, 'ro.product.system.model')}({get_prop(build_file, 'ro.product.system.device')})\n")
+        f.write(f"## {f"HyperOS{is_hyper_os[2:]}" if is_hyper_os else oem_os_dict.get(manufacturer, manufacturer + "OS")}\n")
+        f.write(f"## Ported from {get_prop(build_file, 'ro.product.system.model')}({get_prop(build_file, 'ro.product.system.device')})\n")
         f.write('\n')
-        f.write('#Info\n')
+        f.write('## Info\n')
         f.write("```\n")
         f.write(f"Device brand: {get_prop(build_file, 'ro.product.system.brand')}\n")
         f.write(f"Device manufacturer: {manufacturer}\n")
@@ -1069,7 +1069,7 @@ def main() -> int:
     if clean_up():
         return 1
     print(f"Done!The GSi File is {IMG_DIR}/out/system.img.")
-    replace(f"{IMG_DIR}/out/info.md", "#Raw Image Size#\n", f"Raw Image Size: {round(os.path.getsize(f'{IMG_DIR}/out/system.img')/1024**3, 2)} GB")
+    replace(f"{IMG_DIR}/out/info.md", "#Raw Image Size#\n", f"Raw Image Size: {round(os.path.getsize(f'{IMG_DIR}/out/system.img')/1024**3, 2)} GB\n")
     return 0
 
 
