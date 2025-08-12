@@ -47,7 +47,7 @@ EXTRACT_DIR = os.path.join(prog_path, 'EXTRACT')
 tool_bin = os.path.join(prog_path, 'bin', platform.system(), platform.machine())
 BIN_DIR = os.path.join(prog_path, 'bin')
 img_files_list = ['my_bigball', 'my_carrier', 'my_engineering', 'my_heytap', 'my_manifest', 'my_product',
-                  'my_region', 'my_stock', 'product', 'system', 'system_ext', 'mi_ext', 'vendor']
+                  'my_region', 'my_stock', 'product', 'system', 'system_ext', 'mi_ext']
 
 
 def call(exe, extra_path=True, out_=None) -> int:
@@ -981,7 +981,7 @@ def repack_image() -> int:
     fspatch(systemdir, fs)
     contextpatch(systemdir, con)
     os.makedirs(f"{IMG_DIR}/out", exist_ok=True)
-    choice = input("Choose a FileSystem to Repack:[ext(default)/erofs]")
+    choice = "ext4"
     if choice == "erofs":
         return call(["mkfs.erofs", "-zlz4hc,9", "--mount-point", f"/system", "--fs-config-file",
                      f"{IMG_DIR}/config/system_fs_config",
