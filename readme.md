@@ -1,23 +1,20 @@
-# OEM Generic System Image Maker
-## Usage
+<div align="center">
+  <h1>OEM Generic System Image Maker</h1>
+  <h3>A workflow to automatically build an GSI with provided firmware link</h3>
+</div>
+
+#### Made by:
+ColdWindScholar(3590361911@qq.com) and [Child I](https://github.com/haizi123-2)
 
 > [!WARNING]
 > 
-> The Tool Is In Developing.
+> The Tool Is In Development
 > 
-> The Gsi cerated may not bootable.
+> The GSI created may not bootable.
 
-- First, You need to install python3
-```shell
-sudo apt install python3-full
-```
-- Then, Install required python packages
-```shell
-pip3 install -r requirements.txt
-```
-- Last, Start the tool
-```shell
-python3 cgsi.py
-```
-#### Thanks [Child I](https://github.com/haizi123-2) For help!
-#### ColdWindScholar(3590361911@qq.com).All rights reserved.
+### Usage
+> This project's basic usage is as follows:
+
+1. Fork this repository
+
+2. Go to the Action page on Github and click OEM GSI Maker, then Run workflow
