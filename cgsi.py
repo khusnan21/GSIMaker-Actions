@@ -1024,7 +1024,7 @@ def main() -> int:
         os.makedirs(IMG_DIR)
     if not os.path.exists(EXTRACT_DIR):
         os.makedirs(EXTRACT_DIR)
-    dest_path = None
+    dest_path = os.path.join(prog_path, "roms", "rom.zip")
     print("========================================")
     print("    OEM Generic System Image Maker")
     print("========================================")
@@ -1032,22 +1032,7 @@ def main() -> int:
     print(f"  Provided by {'|'.join(__author__)}")
     print("========================================")
     print()
-    print("Please Select Operation：")
-    print("1. Download and process")
-    print("2. Process local roms")
-    print("3. Exit")
-    mode = input("Select (1/2/3):")
-    if mode == "3":
-        return 0
-    elif mode == '1':
-        url = input("Enter download url([q] to exit):")
-        if url:
-            filename = url.split("/")[-1].split('?')[0]
-            dest_path = os.path.join(prog_path, filename)
-            download([url], prog_path)
-    else:
-        dest_path = select_file()
-    if not dest_path:
+    if not os.path.exists(dest_path):
         print(f"[{dest_path}] not found.")
         return 1
     if extract_rom(dest_path):

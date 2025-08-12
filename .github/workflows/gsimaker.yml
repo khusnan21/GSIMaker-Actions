@@ -1,0 +1,49 @@
+name: OEM GSI Maker
+
+on:
+  workflow_dispatch:
+    inputs:
+      rom_url:
+        description: 'Firmware download link'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli
+        pip3 install -r requirements.txt
+        pip3 install pycryptodome
+
+    - name: Download firmware
+      run: |
+        mkdir -p roms
+        wget -O "roms/rom.zip" "${{ inputs.rom_url }}"
+
+    - name: Run GSIMaker
+      run: |
+        python3 cgsi.py
+
+    - name: Package output
+      run: |
+        cd IMG/out
+        zip -r gsi_output.zip .
+
+    - name: Upload GSI
+      uses: actions/upload-artifact@v4
+      with:
+        name: gsi-output
+        path: IMG/out/gsi_output.zip
