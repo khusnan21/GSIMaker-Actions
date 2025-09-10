@@ -18,40 +18,15 @@ jobs:
 
     - name: Debloat the OS
       run: |
-            export DEBIAN_FRONTEND=noninteractive
-            echo "DEBIAN_FRONTEND=noninteractive" >> $GITHUB_ENV
+        export DEBIAN_FRONTEND=noninteractive
+        echo "DEBIAN_FRONTEND=noninteractive" >> $GITHUB_ENV
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/powershell /usr/share/swift || true
+        sudo docker image prune --all --force
+        sudo apt-get purge -y $(dpkg-query -W -f='${binary:Package}\n' | grep -E '^mysql|^php|^dotnet') || true
+        sudo apt-get autoremove -y
+        sudo apt-get autoclean -y
 
-            echo "Storage spaces before debloat/clean-up:"
-            df -h
-
-            sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/powershell /usr/share/swift || true
-            sudo docker image prune --all --force
-            echo "some directories deleted"
-
-            # Remove large unwanted packages
-            sudo apt-get purge -y \
-                aria2 ansible azure-cli shellcheck rpm xorriso zsync \
-                esl-erlang firefox gfortran-8 gfortran-9 google-chrome-stable \
-                google-cloud-sdk imagemagick \
-                libmagickcore-dev libmagickwand-dev libmagic-dev ant ant-optional kubectl \
-                mercurial apt-transport-https mono-complete libmysqlclient \
-                unixodbc-dev yarn chrpath libssl-dev libxft-dev \
-                libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev \
-                snmp pollinate libpq-dev postgresql-client powershell ruby-full \
-                sphinxsearch subversion mongodb-org microsoft-edge-stable || true
-
-            # Regex-based purges (for bulk families like mysql, php, dotnet)
-            sudo apt-get purge -y $(dpkg-query -W -f='${binary:Package}\n' | grep -E '^mysql|^php|^dotnet') || true
-
-            # Clean up
-            sudo apt-get autoremove -y
-            sudo apt-get autoclean -y
-            echo "some packages purged"
-
-            echo "Storage spaces after debloat/clean-up:"
-            df -h
-            
-    - name: Set up python
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
@@ -59,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli
+        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli gh
         pip3 install -r requirements.txt
         pip3 install pycryptodome
 
@@ -77,8 +52,21 @@ jobs:
         cd IMG/out
         zip -r gsi_output.zip .
 
-    - name: Upload GSI
-      uses: actions/upload-artifact@v4
-      with:
-        name: gsi-output
-        path: IMG/out/gsi_output.zip
+    - name: Split ZIP if needed
+      run: |
+        cd IMG/out
+        split -b 1900M gsi_output.zip gsi_output.zip.part_
+
+    - name: Create GitHub Release
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        TAG_NAME="gsi-$(date +%Y%m%d-%H%M)"
+        gh release create "$TAG_NAME" --title "GSI Build $TAG_NAME" --notes "Auto-generated GSI from ${{ inputs.rom_url }}"
+
+    - name: Upload to GitHub Release
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        TAG_NAME=$(gh release list --limit 1 | awk '{print $1}')
+        gh release upload "$TAG_NAME" IMG/out/gsi_output.zip.part_*
