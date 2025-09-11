@@ -34,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli gh
+        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli
         pip3 install -r requirements.txt
         pip3 install pycryptodome
 
@@ -52,21 +52,19 @@ jobs:
         cd IMG/out
         zip -r gsi_output.zip .
 
-    - name: Split ZIP if needed
+    - name: Split ZIP for Release
       run: |
         cd IMG/out
         split -b 1900M gsi_output.zip gsi_output.zip.part_
 
-    - name: Create GitHub Release
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: |
-        TAG_NAME="gsi-$(date +%Y%m%d-%H%M)"
-        gh release create "$TAG_NAME" --title "GSI Build $TAG_NAME" --notes "Auto-generated GSI from ${{ inputs.rom_url }}"
-
     - name: Upload to GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: gsi-${{ github.run_id }}
+        name: GSI Build ${{ github.run_id }}
+        body: |
+          Auto-generated GSI from:
+          ${{ inputs.rom_url }}
+        files: IMG/out/gsi_output.zip.part_*
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: |
-        TAG_NAME=$(gh release list --limit 1 | awk '{print $1}')
-        gh release upload "$TAG_NAME" IMG/out/gsi_output.zip.part_*
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
