@@ -47,11 +47,6 @@ jobs:
         mkdir -p roms
         wget -O "roms/rom.zip" "${{ inputs.rom_url }}"
 
-    - name: Inspect firmware ZIP
-      run: |
-        unzip -l roms/rom.zip | tee firmware_contents.txt
-        grep -E 'system.img|system_ext.img' firmware_contents.txt || (echo "Firmware missing required images" && exit 1)
-
     - name: Run GSIMaker
       run: |
         python3 cgsi.py
