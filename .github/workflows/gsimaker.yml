@@ -38,10 +38,6 @@ jobs:
         pip3 install -r requirements.txt
         pip3 install pycryptodome
 
-    - name: Validate firmware link
-      run: |
-        curl -I "${{ inputs.rom_url }}" | grep "200 OK" || (echo "Invalid firmware URL" && exit 1)
-
     - name: Download firmware
       run: |
         mkdir -p roms
@@ -61,23 +57,6 @@ jobs:
         OS_VER=$(grep -m1 'ro.build.version.incremental=' tmp/* | cut -d= -f2 | tr -d '\r')
         OS_TAG="${OS_NAME}_${OS_VER}"
         echo "OS_TAG=$OS_TAG" >> $GITHUB_ENV
-
-    - name: Inject init.gsi.rc via workflow
-      run: |
-        EXT_PATH="IMG/system_ext/etc/init"
-        SYS_PATH="IMG/system/etc/init"
-        INIT_CONTENT="# init.gsi.rc injected via workflow"
-
-        if [ -d "$EXT_PATH" ]; then
-          echo "$INIT_CONTENT" > "$EXT_PATH/init.gsi.rc"
-          echo "Injected to system_ext"
-        elif [ -d "$SYS_PATH" ]; then
-          mkdir -p "$SYS_PATH"
-          echo "$INIT_CONTENT" > "$SYS_PATH/init.gsi.rc"
-          echo "Injected to system fallback"
-        else
-          echo "Warning: No valid init path found, skipping injection"
-        fi
 
     - name: Repack to tar.xz
       run: |
