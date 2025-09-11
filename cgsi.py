@@ -231,12 +231,33 @@ def modify_parts() -> int:
             os.makedirs(f"{systemdir}/{i}", exist_ok=True)
     for i in ["update_engine", "update_verifier"]:
         rm_rf(f"{systemdir}/system/bin/{i}")
-    rm_rf(f"{IMG_DIR}/system_ext/etc/selinux/mapping")
-    os.makedirs(f"{IMG_DIR}/system_ext/etc/selinux/mapping", exist_ok=True)
-    rm_rf(f"{IMG_DIR}/product/etc/selinux/mapping")
-    os.makedirs(f"{IMG_DIR}/product/etc/selinux/mapping", exist_ok=True)
-    with open(f"{IMG_DIR}/system_ext/etc/init/init.gsi.rc", 'w', encoding='utf-8') as f:
-        f.write("\n")
+# system_ext mapping
+    se_ext_map = f"{IMG_DIR}/system_ext/etc/selinux/mapping"
+    if os.path.exists(os.path.dirname(se_ext_map)):
+        rm_rf(se_ext_map)
+        os.makedirs(se_ext_map, exist_ok=True)
+    else:
+        print(f"[!] {se_ext_map} not found, skipping mapping creation for system_ext.")
+
+    # product mapping
+    prod_map = f"{IMG_DIR}/product/etc/selinux/mapping"
+    if os.path.exists(os.path.dirname(prod_map)):
+        rm_rf(prod_map)
+        os.makedirs(prod_map, exist_ok=True)
+    else:
+        print(f"[!] {prod_map} not found, skipping mapping creation for product.")
+
+    # init.gsi.rc for system_ext
+    se_init = f"{IMG_DIR}/system_ext/etc/init/init.gsi.rc"
+    if os.path.exists(os.path.dirname(se_init)):
+        # make sure parent dirs exist
+        os.makedirs(os.path.dirname(se_init), exist_ok=True)
+        with open(se_init, 'w', encoding='utf-8') as f:
+            f.write("\n")
+        # … (lanjutan bagian replace dsb, kalau perlu juga disesuaikan)
+    else:
+        print(f"[!] {se_init} not found, skipping init.gsi.rc for system_ext.")
+      
     for i in [
         'persist.vendor.camera.selfie.unfold u:object_r:exported_system_prop:s0 exact int',
         'persist.vendor.camera.3rdhighResolutionBlob.scenes u:object_r:exported_system_prop:s0',
