@@ -207,11 +207,20 @@ def get_prop(file: str, name: str) -> str:
     return ""
 
 
-def replace(file: str, origin: str, repl: str) -> int:
-    with open(file, "r+", encoding='utf-8') as f:
-        lines = f.readlines()
-        f.seek(0)
-        f.truncate()
+def replace(file, old, new):
+    if not os.path.exists(file):
+        print(f"[!] {file} not found, skipping replace")
+        return
+    try:
+        with open(file, "r+", encoding='utf-8') as f:
+            s = f.read()
+            s = s.replace(old, new)
+            f.seek(0)
+            f.write(s)
+            f.truncate()
+        print(f"[+] Patched {file}")
+    except Exception as e:
+        print(f"[!] Failed to patch {file}: {e}")
         for i in lines:
             if i == origin:
                 f.write(repl)
