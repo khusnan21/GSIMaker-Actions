@@ -624,7 +624,11 @@ def modify_parts() -> int:
         '(genfscon tracefs "/events/uprobes" (u object_r debugfs_tracing ((s0) (s0))))',
         '(genfscon tracefs "/kprobe_events" (u object_r debugfs_tracing ((s0) (s0))))',
         '(genfscon tracefs "/uprobe_events" (u object_r debugfs_tracing ((s0) (s0))))', ]:
-        replace(f"{IMG_DIR}/system_ext/etc/selinux/system_ext_sepolicy.cil", i + "\n", "")
+        ctx_file = f"{IMG_DIR}/system_ext/etc/selinux/system_ext_property_contexts"
+if os.path.exists(ctx_file):
+    replace(ctx_file, i + "\n", '')
+else:
+    print(f"[!] {ctx_file} not found, skipping replace")
     with open(f"{IMG_DIR}/product/etc/build.prop", 'a+', encoding='utf-8') as f:
         for i in [
             'ro.cp_system_other_odex=0',
