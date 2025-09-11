@@ -34,7 +34,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli
+        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli xz-utils
         pip3 install -r requirements.txt
         pip3 install pycryptodome
 
@@ -47,15 +47,26 @@ jobs:
       run: |
         python3 cgsi.py
 
-    - name: Package output
+    - name: Extract OS Info
       run: |
-        cd IMG/out
-        zip -r gsi_output.zip .
+        mkdir -p tmp
+        unzip -j roms/rom.zip "system/build.prop" -d tmp || true
+        unzip -j roms/rom.zip "system/etc/prop.default" -d tmp || true
 
-    - name: Split ZIP for Release
+        OS_NAME=$(grep -m1 'ro.build.version.release=' tmp/* | cut -d= -f2 | tr -d '\r')
+        OS_VER=$(grep -m1 'ro.build.version.incremental=' tmp/* | cut -d= -f2 | tr -d '\r')
+        OS_TAG="${OS_NAME}_${OS_VER}"
+        echo "OS_TAG=$OS_TAG" >> $GITHUB_ENV
+
+    - name: Repack to tar.xz
       run: |
-        cd IMG/out
-        split -b 1900M gsi_output.zip gsi_output.zip.part_
+        cd IMG
+        tar -cJf "${OS_TAG}.tar.xz" out/
+
+    - name: Split tar.xz
+      run: |
+        cd IMG
+        split -b 1900M "${OS_TAG}.tar.xz" "${OS_TAG}.tar.xz.part_"
 
     - name: Upload to GitHub Release
       uses: softprops/action-gh-release@v2
@@ -65,6 +76,7 @@ jobs:
         body: |
           Auto-generated GSI from:
           ${{ inputs.rom_url }}
-        files: IMG/out/gsi_output.zip.part_*
+          Detected OS: ${{ env.OS_TAG }}
+        files: IMG/${{ env.OS_TAG }}.tar.xz.part_*
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
