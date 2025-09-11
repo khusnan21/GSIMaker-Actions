@@ -1,3 +1,4 @@
+
 name: OEM GSI Maker
 
 on:
@@ -34,7 +35,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli xz-utils
+        sudo apt-get install -y e2fsprogs android-sdk-libsparse-utils python3-pip brotli zip unzip
         pip3 install -r requirements.txt
         pip3 install pycryptodome
 
@@ -58,15 +59,15 @@ jobs:
         OS_TAG="${OS_NAME}_${OS_VER}"
         echo "OS_TAG=$OS_TAG" >> $GITHUB_ENV
 
-    - name: Repack to tar.xz
+    - name: Repack to zip
       run: |
         cd IMG
-        tar -cJf "${OS_TAG}.tar.xz" out/
+        zip -r "${OS_TAG}.zip" out/
 
-    - name: Split tar.xz
+    - name: Split zip
       run: |
         cd IMG
-        split -b 1900M "${OS_TAG}.tar.xz" "${OS_TAG}.tar.xz.part_"
+        split -b 1900M "${OS_TAG}.zip" "${OS_TAG}.zip.part_"
 
     - name: Upload to GitHub Release
       uses: softprops/action-gh-release@v2
@@ -77,6 +78,6 @@ jobs:
           Auto-generated GSI from:
           ${{ inputs.rom_url }}
           Detected OS: ${{ env.OS_TAG }}
-        files: IMG/${{ env.OS_TAG }}.tar.xz.part_*
+        files: IMG/${{ env.OS_TAG }}.zip.part_*
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
