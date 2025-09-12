@@ -225,16 +225,22 @@ def get_prop(file: str, name: str) -> str:
 
 def modify_parts() -> int:
     systemdir = f"{IMG_DIR}/system"
+
     # Avoid flashing wrong rec
     rm_rf(f"{systemdir}/init.recovery.hardware.rc")
     rm_rf(f"{systemdir}/cache")
-    os.makedirs(f"{systemdir}/cache")
+    os.makedirs(f"{systemdir}/cache", exist_ok=True)
+
+    # Ensure important subdirs exist
     for i in ["bt_firmware", "dsp", "firmware", "lost+found", "persist"]:
         if not os.path.exists(f"{systemdir}/{i}"):
             os.makedirs(f"{systemdir}/{i}", exist_ok=True)
+
+    # Remove update_engine & update_verifier
     for i in ["update_engine", "update_verifier"]:
         rm_rf(f"{systemdir}/system/bin/{i}")
-# system_ext mapping
+
+    # system_ext mapping
     se_ext_map = f"{IMG_DIR}/system_ext/etc/selinux/mapping"
     if os.path.exists(os.path.dirname(se_ext_map)):
         rm_rf(se_ext_map)
@@ -253,13 +259,24 @@ def modify_parts() -> int:
     # init.gsi.rc for system_ext
     se_init = f"{IMG_DIR}/system_ext/etc/init/init.gsi.rc"
     if os.path.exists(os.path.dirname(se_init)):
-        # make sure parent dirs exist
         os.makedirs(os.path.dirname(se_init), exist_ok=True)
-        with open(se_init, 'w', encoding='utf-8') as f:
+        with open(se_init, "w", encoding="utf-8") as f:
             f.write("\n")
-        # … (lanjutan bagian replace dsb, kalau perlu juga disesuaikan)
+        print(f"[+] Created {se_init}")
     else:
         print(f"[!] {se_init} not found, skipping init.gsi.rc for system_ext.")
+
+    # system_ext_property_contexts replace example
+    ctx_file = f"{IMG_DIR}/system_ext/etc/selinux/system_ext_property_contexts"
+    for i in ["some_string_to_remove1", "some_string_to_remove2"]:  # ganti sesuai kebutuhan
+        if os.path.exists(ctx_file):
+            replace(ctx_file, i + "\n", "")
+        else:
+            print(f"[!] {ctx_file} not found, skipping replace")
+
+    # Tambahin modifikasi lain sesuai kebutuhan script...
+
+    return 0
       
     for i in [
         'persist.vendor.camera.selfie.unfold u:object_r:exported_system_prop:s0 exact int',
