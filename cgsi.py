@@ -207,32 +207,6 @@ def get_prop(file: str, name: str) -> str:
     return ""
 
 
-def replace(file, old, new):
-    import os
-    if not os.path.exists(file):
-        print(f"[!] {file} not found, skipping replace")
-        return
-    try:
-    if not os.path.exists(file):
-        print(f"[!] {file} not found, skipping replace")
-        return
-    try:
-        with open(file, "r+", encoding='utf-8') as f:
-            s = f.read()
-            s = s.replace(old, new)
-            f.seek(0)
-            f.write(s)
-            f.truncate()
-        print(f"[+] Patched {file}")
-    except Exception as e:
-        print(f"[!] Failed to patch {file}: {e}")
-        for i in lines:
-            if i == origin:
-                f.write(repl)
-            else:
-                f.write(i)
-    return 0
-
 
 def modify_parts() -> int:
     systemdir = f"{IMG_DIR}/system"
@@ -253,7 +227,23 @@ def modify_parts() -> int:
     else:
         print(f"[!] {se_ext_map} not found, skipping mapping creation for system_ext.")
 
-    # product mapping
+   def replace(file, old, new):
+    import os
+    if not os.path.exists(file):
+        print(f"[!] {file} not found, skipping replace")
+        return
+    try:
+        with open(file, "r+", encoding='utf-8') as f:
+            s = f.read()
+            s = s.replace(old, new)
+            f.seek(0)
+            f.write(s)
+            f.truncate()
+        print(f"[+] Patched {file}")
+    except Exception as e:
+        print(f"[!] Failed to patch {file}: {e}")
+      
+ # product mapping
     prod_map = f"{IMG_DIR}/product/etc/selinux/mapping"
     if os.path.exists(os.path.dirname(prod_map)):
         rm_rf(prod_map)
